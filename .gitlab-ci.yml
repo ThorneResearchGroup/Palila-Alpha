@@ -1,0 +1,11 @@
+image: gitlab.tresearchgroup.tech:5050/tresearchgroup/tech-department/runnercontainer
+
+stages:
+  - build
+
+build:
+  stage: build
+  script:
+    - mvn compile
+    - mvn clean test
+    - mvn package

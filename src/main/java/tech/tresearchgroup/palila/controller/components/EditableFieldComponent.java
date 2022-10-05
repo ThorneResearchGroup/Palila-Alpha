@@ -11,11 +11,13 @@ public class EditableFieldComponent {
             iffElse(editable,
                 iffElse(value != null && !value.equals("") && !value.equals("0") && !value.equals("null"),
                     span(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         input().withType("text").withValue(value).withName(name)
                     ),
                     span(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         input().withType("text").withName(name)
@@ -23,6 +25,7 @@ public class EditableFieldComponent {
                 ),
                 iff(value != null && !value.equals("") && !value.equals("0") && !value.equals("null"),
                     span(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         label(value)

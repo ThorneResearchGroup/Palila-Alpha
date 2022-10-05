@@ -28,6 +28,7 @@ public class CompressionController {
             case NONE -> data;
         };
     }
+
     public static byte[] gzipCompress(byte[] data) throws IOException {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream(data.length);
         try (byteStream) {

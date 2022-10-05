@@ -3,28 +3,24 @@ package tech.tresearchgroup.palila.controller.endpoints;
 import io.activej.http.HttpRequest;
 import io.activej.http.HttpResponse;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-
 public interface MediaTypeControllerInterface {
-    HttpResponse get(int page, int pageSize, HttpRequest httpRequest) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
+    HttpResponse get(int page, int pageSize, HttpRequest httpRequest);
 
-    HttpResponse post(String data, HttpRequest httpRequest) throws Exception;
+    HttpResponse post(String data, HttpRequest httpRequest);
 
-    HttpResponse put(String data, HttpRequest httpRequest) throws Exception;
+    HttpResponse put(String data, HttpRequest httpRequest);
 
     HttpResponse getSample(HttpRequest httpRequest);
 
-    HttpResponse getById(Long albumId, HttpRequest httpRequest) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
+    HttpResponse getById(Long albumId, HttpRequest httpRequest);
 
-    HttpResponse patch(String data, HttpRequest httpRequest) throws Exception;
+    HttpResponse patch(String data, HttpRequest httpRequest);
 
-    HttpResponse deleteById(Long albumId, HttpRequest httpRequest) throws Exception;
+    HttpResponse deleteById(Long albumId, HttpRequest httpRequest);
 
-    HttpResponse deleteIndexes(HttpRequest httpRequest) throws Exception;
+    HttpResponse deleteIndexes(HttpRequest httpRequest);
 
-    HttpResponse reindex(HttpRequest httpRequest) throws Exception;
+    HttpResponse reindex(HttpRequest httpRequest);
 
-    HttpResponse databaseSearch(String query, String returnColumn, HttpRequest httpRequest) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
+    HttpResponse databaseSearch(String query, String returnColumn, HttpRequest httpRequest);
 }

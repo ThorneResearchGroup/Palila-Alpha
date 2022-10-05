@@ -15,9 +15,14 @@ public interface BasicObjectInterface {
     @Serialize(order = 2)
     @SerializeNullable Long getId();
 
+    @Serialize(order = 3)
+    @SerializeNullable LockType getLockType();
+
     void setCreated(Date created);
 
     void setUpdated(Date updated);
 
     void setId(Long id);
+
+    void setLockType(LockType lockType);
 }

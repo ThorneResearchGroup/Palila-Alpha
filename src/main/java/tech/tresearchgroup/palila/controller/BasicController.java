@@ -31,7 +31,9 @@ public class BasicController extends HttpResponses {
         if (basicUserObjectInterface == null) {
             return false;
         }
-        System.out.println("Checking authorization for: " + basicUserObjectInterface.getUsername());
+        if (BaseSettings.debug) {
+            System.out.println("Checking authorization for: " + basicUserObjectInterface.getUsername());
+        }
         return isPermitted(permissionGroupEnum, basicUserObjectInterface) && verifyApiKey(httpRequest);
     }
 
@@ -82,7 +84,7 @@ public class BasicController extends HttpResponses {
         return false;
     }
 
-    private String getJwt(HttpRequest httpRequest) {
+    String getJwt(HttpRequest httpRequest) {
         String jwt = httpRequest.getHeader(HttpHeaders.AUTHORIZATION);
         if (jwt == null) {
             jwt = httpRequest.getCookie("authorization");

@@ -5,25 +5,23 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface GenericDatabaseAccessObject {
-    boolean create(Object object) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    boolean create(Object object) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
 
-    Object read(Long id, Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
+    Object read(Long id, Class theClass) throws SQLException, InvocationTargetException, IllegalAccessException, InstantiationException;
 
-    List<Object> readAll(Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List<Object> readAll(Class theClass, boolean full) throws SQLException;
 
-    List readPaginated(int resultCount, int page, Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List readPaginated(int resultCount, int page, Class theClass, boolean full) throws SQLException;
 
-    List readNewestPaginated(int resultCount, int page, Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List readOrderedBy(int resultCount, int page, Class theClass, String orderedBy, boolean ascending, boolean full) throws SQLException;
 
-    List readPopularPaginated(int resultCount, int page, Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    boolean update(Object object) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
 
-    boolean update(Object object) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    boolean delete(long id, Class theClass) throws SQLException;
 
-    boolean delete(long id, Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    Long getTotal(Class theClass) throws SQLException;
 
-    Long getTotal(Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    Long getTotalPages(int maxResultsSize, Class theClass) throws SQLException;
 
-    Long getTotalPages(int maxResultsSize, Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
-
-    List databaseSearch(int maxResultsSize, String query, String returnColumn, String searchColumn, Class theClass) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List databaseSearch(int maxResultsSize, String query, String returnColumn, String searchColumn, Class theClass) throws SQLException;
 }

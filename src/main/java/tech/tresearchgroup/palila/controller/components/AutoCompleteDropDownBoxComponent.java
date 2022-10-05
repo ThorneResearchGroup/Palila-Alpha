@@ -15,6 +15,7 @@ public class AutoCompleteDropDownBoxComponent {
         String finalSelected = selected;
         return iffElse(editable,
             span(
+                br(),
                 label(title).withClass("subLabel"),
                 br(),
                 input().withName(name).withList(name + "-data"),
@@ -29,6 +30,7 @@ public class AutoCompleteDropDownBoxComponent {
             ),
             iff(!finalSelected.equals("") && !finalSelected.equals("null"),
                 span(
+                    br(),
                     label(title).withClass("subLabel"),
                     br(),
                     input().withName(name).withValue(finalSelected)
@@ -44,12 +46,14 @@ public class AutoCompleteDropDownBoxComponent {
             iffElse(editable,
                 iffElse(value != null && !value.equals("") && !value.equals("null"),
                     html(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         input().withType("text").attr("onKeyUp", "showResults(this.value, '" + endpoint + "', '" + name + "')").withValue(value),
                         div().withId(name)
                     ),
                     html(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         input().withType("text").attr("onKeyUp", "showResults(this.value, '" + endpoint + "', '" + name + "')"),
@@ -58,6 +62,7 @@ public class AutoCompleteDropDownBoxComponent {
                 ),
                 iff(value != null && !value.equals("") && !value.equals("null"),
                     html(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         input().withType("text").attr("onKeyUp", "showResults(this.value, '" + endpoint + "', '" + name + "')").withValue(value),

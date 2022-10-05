@@ -1,29 +1,27 @@
 package tech.tresearchgroup.palila.controller.database;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
 import java.util.List;
 
 public interface DatabaseAccessObject {
-    boolean create(Object object) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    boolean create(Object object);
 
-    Object read(Long id) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException;
+    Object read(Long id);
 
-    List<Object> readAll() throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List<Object> readAll();
 
-    List readPaginated(int resultCount, int page) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List readPaginated(int resultCount, int page);
 
-    List readNewestPaginated(int resultCount, int page) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List readNewestPaginated(int resultCount, int page);
 
-    List readPopularPaginated(int resultCount, int page) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List readPopularPaginated(int resultCount, int page);
 
-    boolean update(Object object) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    boolean update(Object object);
 
-    boolean delete(long id) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    boolean delete(long id);
 
-    long getTotal() throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    long getTotal();
 
-    long getTotalPages(int maxResultsSize) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    long getTotalPages(int maxResultsSize);
 
-    List databaseSearch(int maxResultsSize, String query, String returnColumn, String searchColumn) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException;
+    List databaseSearch(int maxResultsSize, String query, String returnColumn, String searchColumn);
 }

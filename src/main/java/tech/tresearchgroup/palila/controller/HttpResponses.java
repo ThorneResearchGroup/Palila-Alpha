@@ -30,7 +30,7 @@ public class HttpResponses extends AbstractModule {
     }
 
     public HttpResponse ok(boolean returnThis) {
-        if(returnThis) {
+        if (returnThis) {
             return ok();
         }
         return error();
@@ -40,7 +40,7 @@ public class HttpResponses extends AbstractModule {
         if (BaseSettings.maintenanceMode) {
             return redirect("/maintenance");
         }
-        if(BaseSettings.compressionMethod.equals(CompressionMethodEnum.NONE)) {
+        if (BaseSettings.compressionMethod.equals(CompressionMethodEnum.NONE)) {
             return HttpResponse.ok200().withBody(data).withHeader(HttpHeaders.CACHE_CONTROL, "no-store");
         }
         return HttpResponse
@@ -54,7 +54,7 @@ public class HttpResponses extends AbstractModule {
         if (BaseSettings.maintenanceMode) {
             return redirect("/maintenance");
         }
-        if(BaseSettings.compressionMethod.equals(CompressionMethodEnum.NONE)) {
+        if (BaseSettings.compressionMethod.equals(CompressionMethodEnum.NONE)) {
             return HttpResponse.ok200().withBody(cachedEntity.getData()).withHeader(HttpHeaders.CACHE_CONTROL, "no-store");
         }
         return HttpResponse
@@ -84,7 +84,7 @@ public class HttpResponses extends AbstractModule {
     }
 
     protected HttpResponse error(Exception e) {
-        if(BaseSettings.debug) {
+        if (BaseSettings.debug) {
             e.printStackTrace();
         }
         return error();

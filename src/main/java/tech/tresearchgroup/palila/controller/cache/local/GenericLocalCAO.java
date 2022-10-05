@@ -6,8 +6,8 @@ import tech.tresearchgroup.palila.model.BaseSettings;
 import tech.tresearchgroup.palila.model.enums.CacheTypesEnum;
 
 public class GenericLocalCAO implements BasicLocalCache {
-    private Cache<Long, byte[]> apiCache;
-    private Cache<Long, byte[]> databaseCache;
+    private final Cache<Long, byte[]> apiCache;
+    private final Cache<Long, byte[]> databaseCache;
 
     public GenericLocalCAO() {
         this.apiCache = Caffeine.newBuilder().maximumSize(BaseSettings.apiCacheSize).build();
@@ -16,20 +16,24 @@ public class GenericLocalCAO implements BasicLocalCache {
 
     @Override
     public void create(CacheTypesEnum cacheTypesEnum, long id, byte[] data) {
-        switch (cacheTypesEnum) {
-            case API -> apiCache.put(id, data);
-            case DATABASE -> databaseCache.put(id, data);
+        if (BaseSettings.cacheEnable) {
+            switch (cacheTypesEnum) {
+                case API -> apiCache.put(id, data);
+                case DATABASE -> databaseCache.put(id, data);
+            }
         }
     }
 
     @Override
     public byte[] read(CacheTypesEnum cacheTypesEnum, long id) {
-        switch (cacheTypesEnum) {
-            case API -> {
-                return apiCache.getIfPresent(id);
-            }
-            case DATABASE -> {
-                return databaseCache.getIfPresent(id);
+        if (BaseSettings.cacheEnable) {
+            switch (cacheTypesEnum) {
+                case API -> {
+                    return apiCache.getIfPresent(id);
+                }
+                case DATABASE -> {
+                    return databaseCache.getIfPresent(id);
+                }
             }
         }
         return null;
@@ -37,21 +41,25 @@ public class GenericLocalCAO implements BasicLocalCache {
 
     @Override
     public void update(CacheTypesEnum cacheTypesEnum, long id, byte[] data) {
-        switch (cacheTypesEnum) {
-            case API: {
-                apiCache.invalidate(id);
-                apiCache.put(id, data);
-            }
-            case DATABASE: {
-                databaseCache.invalidate(id);
-                databaseCache.put(id, data);
+        if (BaseSettings.cacheEnable) {
+            switch (cacheTypesEnum) {
+                case API: {
+                    apiCache.invalidate(id);
+                    apiCache.put(id, data);
+                }
+                case DATABASE: {
+                    databaseCache.invalidate(id);
+                    databaseCache.put(id, data);
+                }
             }
         }
     }
 
     @Override
     public void delete(long id) {
-        apiCache.invalidate(id);
-        databaseCache.invalidate(id);
+        if (BaseSettings.cacheEnable) {
+            apiCache.invalidate(id);
+            databaseCache.invalidate(id);
+        }
     }
 }

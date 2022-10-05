@@ -3,6 +3,7 @@ package tech.tresearchgroup.palila.controller.cache.remote;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
+import tech.tresearchgroup.palila.model.BaseSettings;
 import tech.tresearchgroup.palila.model.enums.CacheTypesEnum;
 
 public class GenericRemoteCAO implements BasicRemoteCache {
@@ -20,20 +21,24 @@ public class GenericRemoteCAO implements BasicRemoteCache {
 
     @Override
     public void create(CacheTypesEnum cacheTypesEnum, String id, String data) {
-        switch (cacheTypesEnum) {
-            case API -> apiCache.set(id, data);
-            case DATABASE -> databaseCache.set(id, data);
+        if (BaseSettings.cacheEnable) {
+            switch (cacheTypesEnum) {
+                case API -> apiCache.set(id, data);
+                case DATABASE -> databaseCache.set(id, data);
+            }
         }
     }
 
     @Override
     public String read(CacheTypesEnum cacheTypesEnum, String id) {
-        switch (cacheTypesEnum) {
-            case API -> {
-                return apiCache.get(id);
-            }
-            case DATABASE -> {
-                return databaseCache.get(id);
+        if (BaseSettings.cacheEnable) {
+            switch (cacheTypesEnum) {
+                case API -> {
+                    return apiCache.get(id);
+                }
+                case DATABASE -> {
+                    return databaseCache.get(id);
+                }
             }
         }
         return null;
@@ -41,21 +46,25 @@ public class GenericRemoteCAO implements BasicRemoteCache {
 
     @Override
     public void update(CacheTypesEnum cacheTypesEnum, String id, String data) {
-        switch (cacheTypesEnum) {
-            case API: {
-                apiCache.del(id);
-                apiCache.set(id, data);
-            }
-            case DATABASE: {
-                databaseCache.del(id);
-                databaseCache.set(id, data);
+        if (BaseSettings.cacheEnable) {
+            switch (cacheTypesEnum) {
+                case API: {
+                    apiCache.del(id);
+                    apiCache.set(id, data);
+                }
+                case DATABASE: {
+                    databaseCache.del(id);
+                    databaseCache.set(id, data);
+                }
             }
         }
     }
 
     @Override
     public void delete(String id) {
-        apiCache.del(id);
-        databaseCache.del(id);
+        if (BaseSettings.cacheEnable) {
+            apiCache.del(id);
+            databaseCache.del(id);
+        }
     }
 }

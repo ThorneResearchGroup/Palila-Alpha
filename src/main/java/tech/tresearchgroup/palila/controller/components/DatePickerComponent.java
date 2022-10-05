@@ -10,12 +10,14 @@ public class DatePickerComponent {
             iffElse(editable,
                 iffElse(value != null && !value.equals("") && !value.equals("null"),
                     html(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         input().withType("date").withName(name).withValue(value)
                     )
                     ,
                     html(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         input().withType("date").withName(name)
@@ -23,6 +25,7 @@ public class DatePickerComponent {
                 ),
                 iff(value != null && !value.equals("") && !value.equals("null"),
                     html(
+                        br(),
                         label(title).withClass("subLabel"),
                         br(),
                         input().withType("date").withName(name).withValue(value)

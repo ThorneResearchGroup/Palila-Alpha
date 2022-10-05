@@ -13,16 +13,23 @@ public class GenericLocalPageCAO implements BasicLocalPageCache {
 
     @Override
     public void create(String location, long page, long maxResults, byte[] data) {
-        apiPageCache.put(location + "-" + page + "-" + maxResults, data);
+        if (BaseSettings.cacheEnable) {
+            apiPageCache.put(location + "-" + page + "-" + maxResults, data);
+        }
     }
 
     @Override
     public byte[] read(String location, long page, long maxResults) {
-        return apiPageCache.getIfPresent(location + "-" + page + "-" + maxResults);
+        if (BaseSettings.cacheEnable) {
+            return apiPageCache.getIfPresent(location + "-" + page + "-" + maxResults);
+        }
+        return null;
     }
 
     @Override
     public void delete() {
-        apiPageCache.invalidateAll();
+        if (BaseSettings.cacheEnable) {
+            apiPageCache.invalidateAll();
+        }
     }
 }
