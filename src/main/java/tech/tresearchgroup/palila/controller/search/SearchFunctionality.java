@@ -3,15 +3,15 @@ package tech.tresearchgroup.palila.controller.search;
 import java.util.List;
 
 public interface SearchFunctionality {
-    List search(String query) throws Exception;
+    List search(String query);
 
-    void createDocument(Object object) throws Exception;
+    void createDocument(Object object);
 
-    void updateDocument(Object object) throws Exception;
+    void updateDocument(Object object);
 
-    void deleteDocument(long id) throws Exception;
+    void deleteDocument(long id);
 
-    void deleteAllDocuments() throws Exception;
+    void deleteAllDocuments();
 
-    void reindex(int maxResultsSize) throws Exception;
+    void reindex(int maxResultsSize);
 }

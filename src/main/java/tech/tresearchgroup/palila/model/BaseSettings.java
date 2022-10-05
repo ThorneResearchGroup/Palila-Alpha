@@ -1,8 +1,8 @@
 package tech.tresearchgroup.palila.model;
 
 import tech.tresearchgroup.palila.controller.cache.CacheMethodEnum;
-import tech.tresearchgroup.palila.model.enums.SearchMethodEnum;
 import tech.tresearchgroup.palila.model.enums.CompressionMethodEnum;
+import tech.tresearchgroup.palila.model.enums.SearchMethodEnum;
 
 public class BaseSettings {
     public static boolean debug;
@@ -25,9 +25,12 @@ public class BaseSettings {
     public static long databaseCacheSize;
     public static long pageCacheSize;
     public static int maxSearchResults;
-    public static int maxBrowseResults;
+    public static int maxAPIBrowseResults;
+    public static int maxUIBrowseResults;
     public static String databaseName;
     public static int minDatabaseConnections;
     public static int maxDatabaseConnections;
-
+    public static boolean loggingEnabled;
+    public static String baseLibraryPath;
+    public static int cardWidth;
 }

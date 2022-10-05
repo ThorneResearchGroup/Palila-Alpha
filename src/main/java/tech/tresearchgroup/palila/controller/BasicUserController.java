@@ -4,22 +4,17 @@ import com.google.gson.Gson;
 import com.meilisearch.sdk.Client;
 import com.zaxxer.hikari.HikariDataSource;
 import io.activej.http.HttpRequest;
+import io.activej.http.HttpResponse;
 import io.activej.serializer.BinarySerializer;
 import tech.tresearchgroup.palila.model.BaseSettings;
 import tech.tresearchgroup.palila.model.enums.CacheTypesEnum;
 import tech.tresearchgroup.palila.model.enums.PermissionGroupEnum;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
 public class BasicUserController extends BaseController implements GenericControllerInterface {
-    private final PermissionGroupEnum CREATE_PERMISSION_LEVEL;
-    private final PermissionGroupEnum READ_PERMISSION_LEVEL;
-    private final PermissionGroupEnum UPDATE_PERMISSION_LEVEL;
-    private final PermissionGroupEnum DELETE_PERMISSION_LEVEL;
-    private final PermissionGroupEnum SEARCH_PERMISSION_LEVEL;
 
     public BasicUserController(HikariDataSource hikariDataSource,
                                Gson gson,
@@ -35,15 +30,10 @@ public class BasicUserController extends BaseController implements GenericContro
                                PermissionGroupEnum deletePermissionLevel,
                                PermissionGroupEnum searchPermissionLevel) throws Exception {
         super(hikariDataSource, gson, client, theClass, serializer, reindexSize, searchColumn, sample);
-        this.CREATE_PERMISSION_LEVEL = createPermissionLevel;
-        this.READ_PERMISSION_LEVEL = readPermissionLevel;
-        this.UPDATE_PERMISSION_LEVEL = updatePermissionLevel;
-        this.DELETE_PERMISSION_LEVEL = deletePermissionLevel;
-        this.SEARCH_PERMISSION_LEVEL = searchPermissionLevel;
     }
 
     @Override
-    public Object createSecureResponse(Object object, HttpRequest httpRequest) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public Object createSecureResponse(Object object, HttpRequest httpRequest) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         if (genericDAO.create(object)) {
             genericPageCAO.delete();
             return object;
@@ -52,17 +42,17 @@ public class BasicUserController extends BaseController implements GenericContro
     }
 
     @Override
-    public byte[] createSecureAPIResponse(Object object, HttpRequest httpRequest) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException, IOException {
+    public byte[] createSecureAPIResponse(Object object, HttpRequest httpRequest) {
         return new byte[0];
     }
 
     @Override
-    public byte[] readSecureAPIResponse(long id, HttpRequest httpRequest) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public byte[] readSecureAPIResponse(long id, HttpRequest httpRequest) {
         return new byte[0];
     }
 
     @Override
-    public Object readSecureResponse(long id, HttpRequest httpRequest) throws SQLException, InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
+    public Object readSecureResponse(long id, HttpRequest httpRequest) throws SQLException, InvocationTargetException, InstantiationException, IllegalAccessException {
         byte[] cachedData = genericLocalCAO.read(CacheTypesEnum.DATABASE, id);
         Object object;
         if (cachedData != null) {
@@ -76,11 +66,13 @@ public class BasicUserController extends BaseController implements GenericContro
             }
             object = genericDAO.read(id, theClass);
             if (object != null) {
-                if (BaseSettings.debug) {
-                    System.out.println("Adding to cache: " + object);
+                if (BaseSettings.cacheEnable) {
+                    if (BaseSettings.debug) {
+                        System.out.println("Adding to cache: " + object);
+                    }
+                    byte[] binary = ActiveJSerializer.serialize(object, serializer);
+                    genericLocalCAO.create(CacheTypesEnum.DATABASE, id, binary);
                 }
-                byte[] binary = ActiveJSerializer.serialize(object, serializer);
-                genericLocalCAO.create(CacheTypesEnum.DATABASE, id, binary);
             } else {
                 if (BaseSettings.debug) {
                     System.out.println("Failed to load: " + theClass.getSimpleName() + " : " + id);
@@ -91,17 +83,17 @@ public class BasicUserController extends BaseController implements GenericContro
     }
 
     @Override
-    public List readPaginatedResponse(int page, int pageSize) throws SQLException, InvocationTargetException, NoSuchMethodException {
-        return genericDAO.readPaginated(pageSize, page, theClass);
+    public List readPaginatedResponse(int page, int pageSize, boolean full, HttpRequest httpRequest) throws SQLException {
+        return genericDAO.readPaginated(pageSize, page, theClass, full);
     }
 
     @Override
-    public byte[] readPaginatedAPIResponse(int page, int pageSize) throws SQLException, InvocationTargetException, NoSuchMethodException, IOException {
+    public byte[] readPaginatedAPIResponse(int page, int pageSize, boolean full, HttpRequest httpRequest) {
         return new byte[0];
     }
 
     @Override
-    public boolean update(long id, Object object) throws Exception {
+    public boolean update(long id, Object object, HttpRequest httpRequest) throws Exception {
         if (genericDAO.update(object)) {
             byte[] json = gson.toJson(object).getBytes();
             byte[] binary = ActiveJSerializer.serialize(object, serializer);
@@ -116,7 +108,7 @@ public class BasicUserController extends BaseController implements GenericContro
     }
 
     @Override
-    public boolean delete(long id) throws Exception {
+    public boolean delete(long id, HttpRequest httpRequest) throws Exception {
         if (genericDAO.delete(id, theClass)) {
             genericLocalCAO.delete(id);
             genericPageCAO.delete();
@@ -127,42 +119,42 @@ public class BasicUserController extends BaseController implements GenericContro
     }
 
     @Override
-    public List search(String query, String returnColumn) throws SQLException, InvocationTargetException, NoSuchMethodException {
+    public List search(String query, String returnColumn, HttpRequest httpRequest) throws SQLException {
         return genericDAO.databaseSearch(BaseSettings.maxSearchResults, query, returnColumn, SEARCH_COLUMN, theClass);
     }
 
     @Override
-    public byte[] searchAPIResponse(String query, String returnColumn) throws SQLException, InvocationTargetException, NoSuchMethodException, IOException {
+    public byte[] searchAPIResponse(String query, String returnColumn, HttpRequest httpRequest) {
         return new byte[0];
     }
 
     @Override
-    public List readNewestPaginated(int resultCount, int page) throws SQLException, InvocationTargetException, NoSuchMethodException {
-        return genericDAO.readNewestPaginated(resultCount, page, theClass);
+    public List readOrderByPaginated(int resultCount, int page, String orderBy, boolean ascending, boolean full, HttpRequest httpRequest) {
+        return null;
     }
 
     @Override
-    public byte[] readNewestPaginatedAPI(int resultCount, int page) throws IOException, SQLException, InvocationTargetException, NoSuchMethodException {
+    public byte[] readOrderByPaginatedAPI(int resultCount, int page, String orderBy, boolean ascending, boolean full, HttpRequest httpRequest) {
         return new byte[0];
     }
 
     @Override
-    public List readPopularPaginated(int resultCount, int page) throws SQLException, InvocationTargetException, NoSuchMethodException {
-        return genericDAO.readPopularPaginated(resultCount, page, theClass);
-    }
-
-    @Override
-    public Long getTotal() throws SQLException {
+    public Long getTotal(HttpRequest httpRequest) throws SQLException {
         return genericDAO.getTotal(theClass);
     }
 
     @Override
-    public Long getTotalPages(int maxResultsSize) throws SQLException {
+    public Long getTotalPages(int maxResultsSize, HttpRequest httpRequest) throws SQLException {
         return genericDAO.getTotalPages(maxResultsSize, theClass);
     }
 
     @Override
-    public boolean reindex() {
+    public HttpResponse deleteAllIndexes(HttpRequest httpRequest) {
+        return null;
+    }
+
+    @Override
+    public boolean reindex(HttpRequest httpRequest) {
         try {
             genericSAO.reindex(BaseSettings.maxSearchResults, genericDAO, index, theClass);
         } catch (Exception e) {
@@ -175,7 +167,7 @@ public class BasicUserController extends BaseController implements GenericContro
     }
 
     @Override
-    public byte[] getSample() {
+    public byte[] getSample(HttpRequest httpRequest) {
         return sample;
     }
 }
